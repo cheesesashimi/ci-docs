@@ -325,3 +325,28 @@ An unfortunate side-effect of the architecture for container image registry auth
 errors when your authentication token expired, even if the image you are attempting to pull requires no authentication.
 Authentication tokens expire once a month. All you'll need to do is follow [the directions](#how-do-i-log-in-to-pull-images-that-require-authentication)
 to log in to the registry again.
+
+### Docker Desktop For Mac
+
+Docker Desktop For Mac attempts to use an external credentials handler by default (e.g., OS X Keychain). This means it will
+ignore the credentials `oc registry login` adds to your `~/.docker/config.json` file, so when you attempt to pull an image
+from one of the CI registries, you'll get an authentication error.
+
+To fix this, remove the `credsStore` key from your `~/.docker/config.json` file:
+
+```json
+{
+  "auths": {
+    "registry.build01.ci.openshift.org": {
+      "auth": "..."
+    },
+    "registry.build02.ci.openshift.org": {
+      "auth": "..."
+    },
+    "registry.ci.openshift.org": {
+      "auth": "..."
+    }
+  },
+  "credsStore": "desktop", // Delete this line
+}
+```
